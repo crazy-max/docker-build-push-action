@@ -529,7 +529,7 @@ jobs:
           docker image ls --no-trunc
       -
         name: Check digest
-        if: ${{ matrix.push }}
+        if: matrix.push
         run: |
           if [ -z "${{ steps.docker_build.outputs.digest }}" ]; then
             echo "::error::Digest should not be empty"
@@ -537,7 +537,7 @@ jobs:
           fi
       -
         name: Check manifest
-        if: ${{ matrix.push && matrix.version == "v0.8.0" }}
+        if: matrix.push && matrix.version == "v0.8.0"
         run: |
           set -x
           docker buildx imagetools inspect ${{ env.DOCKER_IMAGE }}@${{ steps.docker_build.outputs.digest }} --format '{{json .}}'
@@ -550,7 +550,7 @@ jobs:
           fi
       -
         name: Inspect image
-        if: ${{ matrix.load && matrix.version == "v0.8.0" }}
+        if: matrix.load && matrix.version == "v0.8.0"
         run: |
           set -x
           docker image inspect ${{ steps.docker_build.outputs.imageid }}
