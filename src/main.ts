@@ -3,6 +3,7 @@ import * as buildx from './buildx';
 import * as context from './context';
 import * as docker from './docker';
 import * as stateHelper from './state-helper';
+import * as summary from './summary';
 import * as core from '@actions/core';
 import * as exec from '@actions/exec';
 
@@ -75,6 +76,8 @@ async function run(): Promise<void> {
         context.setOutput('metadata', metadata);
       });
     }
+
+    await summary.gen(metadata);
   } catch (error) {
     core.setFailed(error.message);
   }
