@@ -9,6 +9,7 @@ import * as exec from '@actions/exec';
 
 async function run(): Promise<void> {
   try {
+    const start = performance.now();
     const defContext = context.defaultContext();
     const inputs: context.Inputs = await context.getInputs(defContext);
 
@@ -77,7 +78,10 @@ async function run(): Promise<void> {
       });
     }
 
-    await summary.gen(metadata);
+    const sum = await summary.generate(inputs, metadata, performance.now() - start);
+    if (sum !== undefined) {
+      await sum.write();
+    }
   } catch (error) {
     core.setFailed(error.message);
   }
