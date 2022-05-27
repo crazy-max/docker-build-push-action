@@ -42,32 +42,36 @@ function buildinfo(sum: typeof core.summary, bi: BuildInfo, platform: string | u
   sum
     .addEOL()
     .addHeading(title, 2)
-    .addRaw(`Build dependencies have been generated when your image has been built. These dependencies include versions of used images, git repositories and HTTP URLs as well as build request attributes as described below.`, true)
-    .addRaw(`More information: https://github.com/moby/buildkit/blob/master/docs/build-repro.md`, true);
+    .addRaw(`Build dependencies have been generated when your image has been built.These dependencies include versions of used images, git repositories and HTTP URLs as well as build request attributes as described below.`, true)
+    .addEOL()
+    .addRaw(`More information: `)
+    .addLink('https://github.com/moby/buildkit/blob/master/docs/build-repro.md', 'https://github.com/moby/buildkit/blob/master/docs/build-repro.md');
 
   // attrs
   if (bi.attrs !== undefined) {
     sum.addEOL().addHeading('Request attributes', 3);
-    let buildAttrs = '';
-    let buildArgs = '';
-    let buildLabels = '';
+    const buildAttrs: Array<string> = [];
+    const buildArgs: Array<string> = [];
+    const buildLabels: Array<string> = [];
     Object.keys(bi.attrs).forEach(key => {
       const value = bi.attrs[key];
       if (key.startsWith('build-arg:')) {
-        if (buildArgs == '') {
-          buildArgs += `* Args\n`;
-        }
-        buildArgs += `  * <pre>${key.substring(10)}=${value}</pre>\n`;
+        buildArgs.push(`<code>${key.substring(10)}=${value}</code>`);
       } else if (key.startsWith('label:')) {
-        if (buildLabels == '') {
-          buildLabels += `* Labels\n`;
-        }
-        buildLabels += `  * <pre>${key.substring(6)}=${value}</pre>\n`;
+        buildLabels.push(`<code>${key.substring(6)}=${value}</code>`);
       } else {
-        buildAttrs += `* <pre>${key}=${value}</pre>\n`;
+        buildAttrs.push(`<code>${key}=${value}</code>`);
       }
     });
-    sum.addRaw(buildAttrs + buildArgs + buildLabels);
+    if (buildAttrs.length > 0) {
+      sum.addHeading('Common attributes', 4).addList(buildAttrs, true);
+    }
+    if (buildArgs.length > 0) {
+      sum.addHeading('Arguments', 4).addList(buildArgs, true);
+    }
+    if (buildLabels.length > 0) {
+      sum.addHeading('Labels', 4).addList(buildLabels, true);
+    }
   }
 
   // sources
@@ -80,7 +84,7 @@ function buildinfo(sum: typeof core.summary, bi: BuildInfo, platform: string | u
       ]
     ];
     for (const source of bi.sources) {
-      buildSources.push([source.type, `<pre>${source.ref}</pre>`]);
+      buildSources.push([source.type, `<code>${source.ref}</code>`]);
     }
     sum.addTable(buildSources);
   }
