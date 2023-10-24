@@ -40,6 +40,9 @@ jobs:
         include:
           -
             buildx_version: latest
+            buildkit_image: moby/buildkit:v0.12.2
+          -
+            buildx_version: latest
             buildkit_image: moby/buildkit:buildx-stable-1
           -
             buildx_version: https://github.com/docker/buildx.git#master
