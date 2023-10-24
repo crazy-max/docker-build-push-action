@@ -40,6 +40,9 @@ jobs:
         include:
           -
             buildx_version: latest
+            buildkit_image: crazymax/buildkit:0.12.3-regression
+          -
+            buildx_version: latest
             buildkit_image: moby/buildkit:v0.12.2
           -
             buildx_version: latest
