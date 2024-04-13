@@ -1346,3 +1346,27 @@ jobs:
         name: Check docker
         run: |
           docker image inspect localhost:5000/name/app:latest
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          # TODO: use v0.14.0 when GA
+          version: v0.14.0-rc1
+          # TODO: use buildx-stable-1 image when v0.14 promoted
+          driver-opts: |
+            network=host
+            image=moby/buildkit:master@sha256:baee1d09b849fa6dbbcf7ae407f50eff5c0de47b52f11d78543817d3395441bb
+          buildkitd-flags: --debug
+      -
+        name: Build
+        uses: ./
+        with:
+          context: ./test
+          file: ./test/lint.Dockerfile

@@ -81,6 +81,8 @@ actionsToolkit.run(
     core.debug(`buildCmd.command: ${buildCmd.command}`);
     core.debug(`buildCmd.args: ${JSON.stringify(buildCmd.args)}`);
 
+    await runLint(buildCmd.command, buildCmd.args, toolkit);
+
     await Exec.getExecOutput(buildCmd.command, buildCmd.args, {
       ignoreReturnCode: true
     }).then(res => {
@@ -121,3 +123,32 @@ actionsToolkit.run(
     }
   }
 );
+
+async function runLint(cmd: string, args: Array<string>, toolkit: Toolkit): Promise<void> {
+  if (!(await toolkit.buildx.versionSatisfies('>=0.14.0'))) {
+    return;
+  }
+  await core.group(`Dockerfile lint`, async () => {
+    await Exec.getExecOutput(cmd, [...args, '--print=lint,format=json'], {
+      ignoreReturnCode: true,
+      silent: true,
+      env: Object.assign({}, process.env, {
+        BUILDX_EXPERIMENTAL: '1'
+      }) as {
+        [key: string]: string;
+      }
+    }).then(res => {
+      if (res.stderr.length > 0 && res.exitCode != 0) {
+        throw new Error(`buildx failed with: ${res.stderr.match(/(.*)\s*$/)?.[0]?.trim() ?? 'unknown error'}`);
+      }
+      const out = JSON.parse(res.stdout);
+      if (out['warnings'] && out['warnings'].length > 0) {
+        out['warnings'].forEach((lint: {ruleName: string; description: string; detail: string; location: {ranges: {start: {line: number}; end: {line: number}}}}) => {
+          core.warning(`${lint.detail}`);
+        });
+      } else {
+        core.info('No lint issues found');
+      }
+    });
+  });
+}
