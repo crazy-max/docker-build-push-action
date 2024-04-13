@@ -144,11 +144,11 @@ async function runLint(cmd: string, args: Array<string>, inputs: context.Inputs,
       if (out['warnings'] && out['warnings'].length > 0) {
         // const sourceData = Buffer.from(out['sources'][0].data, 'base64').toString('utf8');
         // core.info(`sourceData: ${sourceData}`);
-        out['warnings'].forEach((lint: {ruleName: string; description: string; detail: string; location: {ranges: {start: {line: number}; end: {line: number}}}}) => {
+        out['warnings'].forEach(lint => {
           core.warning(lint.description, {
             title: lint.detail,
-            file: out['sources'][0]['fileName'],
-            startLine: lint.location.ranges.start.line
+            file: out.sources[0].fileName,
+            startLine: lint.location.ranges[0].start.line
           });
         });
       } else {
