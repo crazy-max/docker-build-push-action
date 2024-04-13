@@ -131,7 +131,6 @@ async function runLint(cmd: string, args: Array<string>, toolkit: Toolkit): Prom
   await core.group(`Dockerfile lint`, async () => {
     await Exec.getExecOutput(cmd, [...args, '--print=lint,format=json'], {
       ignoreReturnCode: true,
-      silent: true,
       env: Object.assign({}, process.env, {
         BUILDX_EXPERIMENTAL: '1'
       }) as {
@@ -143,6 +142,8 @@ async function runLint(cmd: string, args: Array<string>, toolkit: Toolkit): Prom
       }
       const out = JSON.parse(res.stdout);
       if (out['warnings'] && out['warnings'].length > 0) {
+        const sourceData = Buffer.from(out['sources'][0].data, 'base64').toString('utf8');
+        core.info(`sourceData: ${sourceData}`);
         out['warnings'].forEach((lint: {ruleName: string; description: string; detail: string; location: {ranges: {start: {line: number}; end: {line: number}}}}) => {
           core.warning(`${lint.detail}`);
         });
