@@ -147,7 +147,7 @@ async function runLint(cmd: string, args: Array<string>, inputs: context.Inputs,
         out['warnings'].forEach(lint => {
           core.warning(lint.description, {
             title: lint.detail,
-            file: out.sources[0].fileName,
+            file: inputs.file || 'Dockerfile',
             startLine: lint.location.ranges[0].start.line
           });
         });
