@@ -81,7 +81,7 @@ actionsToolkit.run(
     core.debug(`buildCmd.command: ${buildCmd.command}`);
     core.debug(`buildCmd.args: ${JSON.stringify(buildCmd.args)}`);
 
-    await runLint(buildCmd.command, buildCmd.args, toolkit);
+    await runLint(buildCmd.command, buildCmd.args, inputs, toolkit);
 
     await Exec.getExecOutput(buildCmd.command, buildCmd.args, {
       ignoreReturnCode: true
@@ -124,7 +124,7 @@ actionsToolkit.run(
   }
 );
 
-async function runLint(cmd: string, args: Array<string>, toolkit: Toolkit): Promise<void> {
+async function runLint(cmd: string, args: Array<string>, inputs: context.Inputs, toolkit: Toolkit): Promise<void> {
   if (!(await toolkit.buildx.versionSatisfies('>=0.14.0'))) {
     return;
   }
@@ -142,10 +142,14 @@ async function runLint(cmd: string, args: Array<string>, toolkit: Toolkit): Prom
       }
       const out = JSON.parse(res.stdout);
       if (out['warnings'] && out['warnings'].length > 0) {
-        const sourceData = Buffer.from(out['sources'][0].data, 'base64').toString('utf8');
-        core.info(`sourceData: ${sourceData}`);
+        // const sourceData = Buffer.from(out['sources'][0].data, 'base64').toString('utf8');
+        // core.info(`sourceData: ${sourceData}`);
         out['warnings'].forEach((lint: {ruleName: string; description: string; detail: string; location: {ranges: {start: {line: number}; end: {line: number}}}}) => {
-          core.warning(`${lint.detail}`);
+          core.warning(lint.description, {
+            title: lint.detail,
+            file: out['sources'][0]['fileName'],
+            startLine: lint.location.ranges.start.line
+          });
         });
       } else {
         core.info('No lint issues found');
