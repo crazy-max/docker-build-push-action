@@ -1055,9 +1055,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@docker/actions-toolkit@npm:0.26.1":
-  version: 0.26.1
-  resolution: "@docker/actions-toolkit@npm:0.26.1"
+"@docker/actions-toolkit@https://github.com/crazy-max/docker-actions-toolkit#summary-test":
+  version: 0.0.0+unknown
+  resolution: "@docker/actions-toolkit@https://github.com/crazy-max/docker-actions-toolkit.git#commit=494fdbd221471de540ed69264a831a3bad4266fc"
   dependencies:
     "@actions/artifact": ^2.1.7
     "@actions/cache": ^3.2.4
@@ -1074,12 +1074,13 @@ __metadata:
     csv-parse: ^5.5.6
     gunzip-maybe: ^1.4.2
     handlebars: ^4.7.8
+    he: ^1.2.0
     js-yaml: ^4.1.0
     jwt-decode: ^4.0.0
     semver: ^7.6.2
     tar-stream: ^3.1.7
     tmp: ^0.2.3
-  checksum: 1c1f1294089ad586521f61945b951e2878054df0a887b0e0604967fedd689a7e11b69054c101a68df0d2ffb96cd8f1ddb19be456cc867b8bcf78118527beb942
+  checksum: 11028b439f93ea5ae8afd10f1e430fbf42df5339ff6f9458cac86c6d63d18cce879076745e8076bd7e67f5da9726056a2c22e1d1ecb2d1d33ccfa89e804d8e0b
   languageName: node
   linkType: hard
 
@@ -3149,7 +3150,7 @@ __metadata:
   resolution: "docker-build-push@workspace:."
   dependencies:
     "@actions/core": ^1.10.1
-    "@docker/actions-toolkit": 0.26.1
+    "@docker/actions-toolkit": "https://github.com/crazy-max/docker-actions-toolkit#summary-test"
     "@types/node": ^20.12.12
     "@typescript-eslint/eslint-plugin": ^7.9.0
     "@typescript-eslint/parser": ^7.9.0
@@ -3959,6 +3960,15 @@ __metadata:
   dependencies:
     function-bind: ^1.1.1
   checksum: b9ad53d53be4af90ce5d1c38331e712522417d017d5ef1ebd0507e07c2fbad8686fffb8e12ddecd4c39ca9b9b47431afbb975b8abf7f3c3b82c98e9aad052792
+  languageName: node
+  linkType: hard
+
+"he@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "he@npm:1.2.0"
+  bin:
+    he: bin/he
+  checksum: 3d4d6babccccd79c5c5a3f929a68af33360d6445587d628087f39a965079d84f18ce9c3d3f917ee1e3978916fc833bb8b29377c3b403f919426f91bc6965e7a7
   languageName: node
   linkType: hard
 
